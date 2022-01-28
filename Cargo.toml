@@ -14,7 +14,7 @@ categories = ["wasm"]
 default = []
 
 [dependencies]
-yew = "0.17"
+yew = "0.19"
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = ["Element", "DomRect", "HtmlIFrameElement", "Window"] }
 serde = { version = "1.0", optional = true, features = ["derive"] }

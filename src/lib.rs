@@ -48,7 +48,7 @@
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::HtmlIFrameElement;
-use yew::{html, Callback, Component, NodeRef, Properties};
+use yew::{html, Callback, Component, Context, NodeRef, Properties};
 
 const IFRAME_STYLE: &str = "display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; border: 0; opacity: 0; pointer-events: none; z-index: -1;";
 
@@ -84,19 +84,20 @@ impl Component for ComponentSizeObserver {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: yew::ComponentLink<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         Self {
-            props,
+            props: ctx.props().clone(),
             iframe_ref: Default::default(),
             on_resize: None,
         }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> yew::ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
         false
     }
 
-    fn change(&mut self, props: Self::Properties) -> yew::ShouldRender {
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        let props = ctx.props().clone();
         if self.props != props {
             self.props = props;
             self.add_resize_listener();
@@ -106,13 +107,13 @@ impl Component for ComponentSizeObserver {
         }
     }
 
-    fn view(&self) -> yew::Html {
+    fn view(&self, _ctx: &Context<Self>) -> yew::Html {
         html! {
-            <iframe style=IFRAME_STYLE ref=self.iframe_ref.clone() />
+            <iframe style={IFRAME_STYLE} ref={self.iframe_ref.clone()} />
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, _ctx: &Context<Self>, first_render: bool) {
         if first_render {
             self.add_resize_listener();
         }
